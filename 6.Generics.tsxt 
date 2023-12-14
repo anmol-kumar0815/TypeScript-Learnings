@@ -1,0 +1,134 @@
+TypeScript Generics
+
+Need of generics:
+
+Suppose you need a function that takes an array and return a random value from that array everytime.
+The array can be of number, string, or object.
+In this case we can't mentioned the return type of the function since if the array if of number then
+the return type should be number but if thr array is of strings then return type should be string.
+
+To overcome this problem one way is to define function return type as `any`:
+```
+function getRandomElement(items: any[]): any {
+    let randomIndex = Math.floor(Math.random() * items.length);
+    return items[randomIndex];
+}
+```
+
+This solution works fine. However, it has a drawback. It doesn’t allow you to enforce the type of the returned element. In other words, it isn’t type-safe.
+
+How to use Generics:
+In these cases Generics comes to rescue us.
+
+```
+function getRandomElement<T>(items: T[]): T {
+  let randomIndex = Math.floor(Math.random() * items.length);
+  return items[randomIndex];
+}
+```
+
+let numbers = [1, 5, 7, 4, 2, 9];
+let randomEle = getRandomElement<number>(numbers);
+console.log(randomEle);
+
+This function uses type variable T. The T allows you to capture the type that is provided at the time of calling the function.
+Also, the function uses the T type variable as its return type.
+
+By convention, we use the letter T as the type variable. However, you can freely use other letters such as A, B C, ....
+
+================================================================================================================
+
+Generic functions with multiple types
+
+```
+function add<T, U>(rollNumber: T, studentName: U): void {
+  console.log(`${studentName} rollnumber is ${rollNumber}.`);
+}
+
+add<number, string>(5, "Anmol");  // "Anmol rollnumber is 5."
+```
+
+In this example we have created two custom types as `T` and `U` we can assign any type to it.
+Like in above example T is representing number type and U is representing string type.
+
+```
+add<string, string>("5", "Anmol");  // "Anmol rollnumber is 5."
+```
+
+In this case both T and U is representing string type.
+
+================================================================================================================
+
+The `extend` keyword in generics.
+
+Consider the below example where merge method expects two objects and return a new merged object.
+
+```
+function merge<U, V>(obj1: U, obj2: V) {
+  return { ...obj1, ...obj2 };
+}
+
+let person = merge({ name: 'John' }, { age: 25 });  // Note: It is not necessary to mention argument types when calling function like: let person = merge<object, object>({ name: 'John' }, { age: 25 });
+
+console.log(result);  // { name: 'John', age: 25 }
+```
+
+This is fine, everything is perfect here. But consider the below call.
+```
+let person = merge({ name: 'John' }, 25);  //The merge() function expects two objects. However, it doesn’t prevent you from passing a non-object like this because of generic.
+console.log(person);  // { name: 'John' }
+```
+
+Instead of working with all types, you may want to add a constraint to the merge() function so that it works with objects only.
+
+To do this, you need to list out the requirement as a constraint on what U and V types can be. In order to denote the constraint, you use the extends keyword.
+
+```
+function merge<U extends object, V extends object>(obj1: U, obj2: V) {
+  return { ...obj1, ...obj2 };
+}
+```
+
+Because the merge() function is now constrained, it will no longer work with all types. Instead, it works with the object type only.
+
+================================================================================================================
+Using type parameters in generic constraints
+
+The following prop() function accepts an object and a property name. It returns the value of the property.
+```
+function prop<T, K>(obj: T, key: K) {
+  return obj[key];
+}
+```
+But the compiler issue error: Type 'K' cannot be used to index type 'T'.
+
+Because compiler is not sure that, K is a property in object T.
+
+To fix this error, we can add a constraint to `K` to ensure that it is a key of `T` as follows:
+
+function prop<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+If you pass into the prop function a property name that exists on the obj, the compiler won’t complain.
+For example:
+
+let str = prop({ name: 'John' }, 'name');
+console.log(str); // John
+
+However, if you pass a key that doesn’t exist on the first argument, the compiler will issue an error:
+
+```
+let str = prop({ name: 'John' }, 'age'); // Error: Argument of type '"age"' is not assignable to parameter of type '"name"'.
+```
+
+Summery
+(i) Use `extends` keyword to constrain the type parameter to a specific type.
+(ii) Use `extends keyof` to constrain a type that is the property of another object.
+================================================================================================================
+
+Benefits of TypeScript generics
+
+(i) Leverage type checks at the compile time.
+(ii) Eliminate type castings.
+(iii) Allow you to implement generic algorithms.

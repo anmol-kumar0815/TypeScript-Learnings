@@ -1,0 +1,89 @@
+Intersection Types
+
+(i) An intersection type creates a new type by combining multiple existing types. The new type has all features of the existing types.
+(ii) To combine types, you use the & operator as follows:
+```
+type typeAB = typeA & typeB;
+```
+(iii) Note that the union type uses the `|` operator that defines a variable that can hold a value of either typeA or typeB but insertion combines typeA and typeB
+```
+let varName = typeA | typeB; // union type
+```
+
+Consider this example: Suppose that you have three interfaces: BusinessPartner, Identity, and Contact.
+```
+interface BusinessPartner {
+    name: string;
+    credit: number;
+}
+
+interface Identity {
+    id: number;
+    name: string;
+}
+
+interface Contact {
+    email: string;
+    phone: string;
+}
+
+type Employee = Identity & Contact;   // The Employee type contains all properties of the Identity and Contact type.
+type Customer = BusinessPartner & Contact; // The Customer type contains all properties of the BusinessPartner and Contact type.
+
+let e: Employee = {
+    id: 100,
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '(408)-897-5684'
+};
+
+let c: Customer = {
+    name: 'ABC Inc.',
+    credit: 1000000,
+    email: 'sales@abcinc.com',
+    phone: '(408)-897-5735'
+};
+```
+
+===============================================================================================================
+`instanceof` operator: It checks if a class object is belong to the specified class.
+
+For Example:
+```
+class Person {
+  name: string;
+
+  constructor(name: string){
+    this.name = name;
+  }
+}
+
+const isPerson = (person: any): boolean => {
+  return person instanceof Person;
+}
+
+const p = new Person("Anmol");
+
+console.log(isPerson(p)); // true
+console.log("name" in p);
+```
+
+`in` operator: safely check for the existence of a property on an object.
+
+For example:
+```
+class Person {
+  name: string;
+
+  constructor(name: string){
+    this.name = name;
+  }
+}
+
+const isPerson = (person: any): boolean => {
+  return person instanceof Person;
+}
+
+const p = new Person("Anmol");
+console.log("name" in p); // true
+```

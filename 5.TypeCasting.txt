@@ -1,0 +1,55 @@
+Type Casting.
+(i) You can use the `as` keyword or `<>` operator for type castings.
+
+Type Casting using the `as` Keyword:
+
+```
+let input = document.querySelector('input["type="text"]'); // Returned type of the document.querySelector() method is the `Element` type.
+console.log(input.value); // Compilation error: The reason is that the value property doesn’t exist in the `Element` type. It only exists on the `HTMLInputElement` type.
+
+// To resolve this, you can use type casting that cast the Element to HTMLInputElement by using the as keyword like this:
+let input = document.querySelector('input[type="text"]') as HTMLInputElement;
+console.log(input.value); // Now this will print the value of input.
+```
+
+Type Casting using the `<>` operator
+
+The syntax for typecasting using the <> is:
+
+let a: typeA;
+let b = <typeB>a;
+
+For example:
+```
+let input = <HTMLInputElement>document.querySelector('input[type="text"]');
+
+console.log(input.value);
+```
+===============================================================================================================
+
+Type Assertion
+(i) Type assertions do not carry any type conversion. Type assertions instruct the compiler to treat a value as a specified type.
+
+Consider the following example:
+```
+function getNetPrice(price: number, discount: number, format: boolean): number | string {
+    let netPrice = price * (1 - discount);
+    return format ? `$${netPrice}` : netPrice;
+}
+
+let netPrice = getNetPrice(100, 0.05, true) as string;  //netPrice will be treat as string.
+console.log(netPrice);    // $95
+
+let netPrice = getNetPrice(100, 0.05, false) as number;    //netPrice will be treat as number.
+console.log(netPrice);    // 95
+```
+
+The alternative Type Assertion syntax
+(i) You can also use the angle bracket syntax `<>` to assert a type, like this:
+```
+<targetType> value
+```
+For example:
+```
+let netPrice = <number>getNetPrice(100, 0.05, false);
+```

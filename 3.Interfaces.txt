@@ -1,0 +1,169 @@
+Interface: it define type structure of an object, function, and class;
+
+For example: Interface for objects.
+```
+interface Person {       // Always start interface name from capital letter.
+  firstName: string,
+  lastName: string
+}
+
+const person: Person = {
+  firstName: "Anmol",
+  lastName: "Kumar"
+}
+
+interface Person {
+  firstName: string;
+  middleName?: string;      // Optional properties are also allowed.
+  lastName: string;
+}
+
+=============================================================================================================
+Interface for function
+
+interface StringFormat {
+  (str: string, flag: boolean): string  // Function will accept two argument of type string and boolean and should return a string.
+}
+
+const convertor: StringFormat = (str, flag) => {
+  return flag ? str.toLowerCase() : str.toUpperCase();
+}
+
+=============================================================================================================
+
+Interface for class.
+
+```
+interface Json {
+  toJSON(): string
+}
+
+class Person implements Json {        // This interface is to ensure that the class have a method called toJSON and it must return an string.
+  firstName: string;
+  lastName: string;
+
+  constructor(firstName: string, lastName: string){
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  toJSON(): string {
+    return JSON.stringify(Object.assign({}, this));
+  }
+}
+
+const person = new Person("Anmol", "Kumar");
+
+console.log(person.toJSON());
+```
+=============================================================================================================
+Extend interfaces.
+
+Suppose that you have an interface called Mailable that contains two methods called send() and queue() as follows:
+```
+interface Mailable {
+  sendMail(email: string): boolean,
+  getMail(email: string): boolean,
+}
+```
+
+And you have many classes that already implemented the Mailable interface.
+
+Now, you want to add a new method to the `Mailable` interface that sends an email later like this:
+```
+later(email: string, after: number): void
+```
+However, adding the `later()` method to the Mailable interface would break the current code.
+
+To avoid this, you can create a new interface that extends the Mailable interface:
+```
+interface FutureMailable extends Mailable {
+  later(email: string, after: number): boolean
+}
+```
+
+```
+// Complete implementation
+interface Mailable {
+  sendMail(email: string): boolean,
+  getMail(email: string): boolean,
+}
+
+interface Later extends Mailable {
+  sendLater(email: string): boolean
+}
+
+class Performer implements Mailable {
+  firstName: string;
+  lastName: string;
+
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  sendMail(email: string) {
+    console.log(email);
+    return true;
+  }
+
+  getMail(email: string) {
+    console.log(email);
+    return false;
+  }
+}
+
+const p = new Performer("Anmol", "Kumar");
+console.log(p.sendMail("This is dummy email"));
+```
+
+(i) An interface can extend one or multiple existing interfaces.
+For example:
+```
+interface C {
+    c(): void
+}
+
+interface D extends B, C {
+    d(): void
+}
+```
+
+=============================================================================================================
+Interfaces extending classes
+
+(i) TypeScript allows an interface to extend a class. In this case, the interface inherits the properties and methods of the class.
+Also, the interface can inherit the private and protected members of the class, not just the public members.
+
+(ii) It means that when an interface extends a class with private or protected members, the interface can only be implemented by that class or subclasses of that class from which the interface extends.
+
+(iii) By doing this, you restrict the usage of the interface to only classes or subclasses of the class from which the interface extends.
+
+If you attempt to implement the interface from a class that is not a subclass of the class that the interface inherited, you’ll get an error.
+
+For example:
+
+```
+class Control {
+    private state: boolean;
+}
+
+interface StatefulControl extends Control {
+    enable(): void
+}
+
+class Button extends Control implements StatefulControl {
+    enable() { }
+}
+class TextBox extends Control implements StatefulControl {
+    enable() { }
+}
+class Label extends Control { }
+
+
+// Error: cannot implement
+class Chart implements StatefulControl {
+    enable() { }
+
+}
+```

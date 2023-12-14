@@ -1,0 +1,312 @@
+Type annotation: TypeScript uses type annotations to explicitly specify types for identifiers such as variables, functions, objects, etc.
+
+let firstName: string = "Anmol";
+firstName = "Rohit";
+
+const lastName: string = "Shrivastav";
+
+ ==================================================================================================
+
+How to define function
+let fun: (name: string) => string;  // declared a function that will receive a string parameter and return a string value
+
+fun = (sername: string) => {        // function body
+    return "Hello " + sername;
+};
+console.log(fun("anmol"));   function call.
+
+// shorthand
+const fun1 = (sername: string): string => {
+  return "Hello " + sername;
+};
+
+Type inference: TypeScript guesses the type.
+Type annotations: You explicitly tell TypeScript the type.
+
+In practice, you should always use the type inference as much as possible. And you use the type annotation in the following cases:
+
+1. When you declare a variable and assign it a value later.
+2. When you want a variable that can’t be inferred.
+3. When a function returns the `any` type and you need to clarify the value.
+
+Optional parameters in functions
+- `c` is an optional parameter.
+```
+function multiply(a: number, b: number, c?: number): number {
+
+    if (typeof c !== "undefined") {
+        return a * b * c;
+    }
+    return a * b;
+}
+```
+
+```
+function multiply(a: number, b?: number, c: number): number { //A required parameter cannot follow an optional parameter. Optional parameters should be at last.
+
+    if (typeof c !== 'undefined') {
+        return a * b * c;
+    }
+    return a * b;
+}
+```
+==================================================================================================
+
+Datatypes.
+
+Following are the primitive datatypes in TypeScript
+a) number
+b) bigint
+c) string
+d) boolean
+e) null
+f) undefined
+g) symbol
+
+1) number
+- All numbers in TypeScript are either floating-point values or big integers. The floating-point numbers have the type number while the big integers get the type bigint.
+
+2) string
+- In TypeScript, all strings get the string type.
+- Like JavaScript, TypeScript uses double quotes ("), single quotes ('), and backtick (`) to surround string literals.
+
+3) boolean
+- Use the `boolean` keyword to declare boolean variables.
+
+4) `object` type
+How to declare an object.
+const employee: {
+    firstName: string;
+    lastName: string;
+    age: number;
+    jobTitle: string;
+} = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 25,
+    jobTitle: 'Web Developer'
+};
+
+employee = "Anmol"; // If we will assign any primitive value to object it will give an error.
+employee.sername; // Error: sername doest not exist in employee; Although it will work in js wuth undefined value.
+
+5) `Object` type
+- TypeScript has another type called Object with the letter O in uppercase.
+- The object type represents all non-primitive values while the Object type describes the functionality of all objects.
+- For example, the Object type has the `toString()` and `valueOf()` methods that can be accessible by any object.
+
+6) `{}` empty type
+- Empty type denoted by `{}`.
+- The empty type {} describes an object that has no property on its own. If you try to access a property on such object, TypeScript will issue a compile-time error:
+```
+let vacant: {};
+vacant.firstName = 'John';    //Error: error TS2339: Property 'firstName' does not exist on type '{}'.
+```
+
+7) Array type
+- Syntax to declare an array: let arrayName: type[];
+- For example: const skills: string[] = ["1", "anmol"];
+- Array with mixed types:
+```ts
+let scores : (string | number)[];
+scores = ['Programming', 5, 'Software Design', 4];
+```
+
+8) Tuple type
+- A tuple works like an array with some additional considerations:
+-> The number of elements in the tuple is fixed.
+-> The types of elements are known, and need not be the same.
+-> For ex: const student: [string, number] = ["Anmol", 7]; // it will only store two values, and first one must be a string and second must be a number.
+-> Ex: let color: [number, number, number] = [255, 0, 0];
+
+8.1) Optional Tuple Elements
+- A tuple can have optional elements specified using the question mark (?) postfix.
+For example:
+```
+let bgColor, headerColor: [number, number, number?, number?]; // two different instances of a tuple.
+bgColor = [0, 255];
+headerColor = [0, 255, 255, 8];
+console.log(bgColor);   // [0, 255]
+console.log(headerColor); // [0, 255, 255, 8]
+```
+
+9) enum
+- Syntax to declare: `enum name {constant1, constant2, ...};`
+
+For example:
+```
+enum Month {
+    Jan,
+    Feb,
+    Mar,
+    Apr,
+    May,
+    Jun,
+    Jul,
+    Aug,
+    Sep,
+    Oct,
+    Nov,
+    Dec
+};
+
+function isItSummer(month: Month) {  // function uses the Month enum as the type of the month parameter.
+    let isSummer: boolean;
+    switch (month) {
+        case Month.Jun:
+        case Month.Jul:
+        case Month.Aug:
+            isSummer = true;
+            break;
+        default:
+            isSummer = false;
+            break;
+    }
+    return isSummer;
+}
+
+console.log(isItSummer(Month.Jun)); // true
+
+- Under the hood the enum gets store in the following structure:
+{
+  '0': 'Jan',
+  '1': 'Feb',
+  '2': 'Mar',
+  '3': 'Apr',
+  '4': 'May',
+  '5': 'Jun',
+  '6': 'Jul',
+  '7': 'Aug',
+  '8': 'Sep',
+  '9': 'Oct',
+  '10': 'Nov',
+  '11': 'Dec',
+  Jan: 0,
+  Feb: 1,
+  Mar: 2,
+  Apr: 3,
+  May: 4,
+  Jun: 5,
+  Jul: 6,
+  Aug: 7,
+  Sep: 8,
+  Oct: 9,
+  Nov: 10,
+  Dec: 11
+}
+
+So its basically an object with named properties declared in the enum definition.
+
+console.log(isItSummer(6)); // true     Same result as passing `Month.Jul`
+```
+
+10) `any` type
+- The TypeScript any type allows you to store a value of any type. It instructs the compiler to skip type-checking.
+- example:
+```
+let result: any;
+result = 10.123;
+console.log(result.toFixed());
+result.willExist(); // The TypeScript compiler doesn’t issue any warning even the willExist() method doesn’t exist at compile time because the willExist() method might be available at runtime.
+```
+
+11) void type
+- To specify that a function will not return anything.
+- Example:
+```js
+function log(message): void {
+    console.log(messsage);
+}
+```
+- Not useful with variables. A variable of type `void` can only have `undefined` as value.
+For example: const name: void = undefined;
+
+12) never type
+- The never type is a type that contains no values. Because of this, you cannot assign any value to a variable with a never type.
+- Typically, you use the never type to represent the return type of a function that always throws an error.
+- For example:
+```
+function raiseError(message: string): never {
+    throw new Error(message);
+}
+```
+
+13) union type (`|`)
+- When we need to declare a variable that can have some specific types of value.
+- For ex:
+```
+let result: number | string | boolean;
+result = 10;
+result = "anmol";
+result = true;
+```
+
+14) alias type
+- Type aliases allow you to create a new name for an existing type.
+- The following shows the syntax of the type alias:
+```
+Syntax:
+type alias = existingType;
+
+Example:
+type chars = string;
+let messsage: chars; // same as string type
+```
+
+15) string literals
+- The string literal types allow you to define a type that accepts only one specified string literal.
+- Example:
+```
+let click: "click";
+click = "click" //valid
+click = "dblclick"; // compiler error
+```
+- The string literal type is useful to limit a possible string value in a variable.
+- The string literal types can combine nicely with the union types to define a finite set of string literal values for a variable:
+- Example:
+```
+let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
+mouseEvent = 'click'; // valid
+mouseEvent = 'dblclick'; // valid
+mouseEvent = 'mouseup'; // valid
+mouseEvent = 'mousedown'; // valid
+mouseEvent = 'mouseover'; // compiler error
+```
+- If you use the string literal types in multiple places, they will be very verbose. To avoid this, you can use the type aliases.
+- For example:
+```
+type MouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
+let mouseEvent: MouseEvent;
+mouseEvent = 'click'; // valid
+mouseEvent = 'dblclick'; // valid
+mouseEvent = 'mouseup'; // valid
+mouseEvent = 'mousedown'; // valid
+mouseEvent = 'mouseover'; // compiler error
+
+let anotherEvent: MouseEvent;
+```
+
+ ==================================================================================================
+
+Function overloading
+
+(i) To better describe the relationships between the types used by a function, TypeScript supports function overloadings.
+For example:
+```
+function add(a: number, b: number): number;
+function add(a: string, b: string): string;
+function add(a: any, b: any): any {
+   return a + b;
+}
+```
+(ii) When you overload a function, the number of required parameters must be the same.
+If an overload has more parameters than the other, you have to make the additional parameters optional.
+For example:
+```
+function sum(a: number, b: number): number;
+function sum(a: number, b: number, c: number): number;
+function sum(a: number, b: number, c?: number): number {
+    if (c) return a + b + c;
+    return a + b;
+}
+```

@@ -1,0 +1,256 @@
+class Person {
+    protected name: string;
+    protected age: number;
+
+    constructor(name: string, age: number){
+        this.name = name;
+        this.age = age;
+    }
+
+    public getName(): string{
+        return this.name;
+    }
+
+    public getAge(): number{
+        return this.age;
+    }
+}
+
+const person = new Person("Anmol", 23);
+
+console.log(person.getName());  // "Anmol"
+console.log(person.getAge());   // 23
+
+==========================================================================================================
+
+Access Modifiers: TypeScript controls the access logically during compilation time, not at runtime.
+1. private: access within the same class.
+2. protected: allows access within the same class and subclasses.
+3. public: allows access from any location.
+
+==========================================================================================================
+
+readonly modifier: allows you to mark the properties of a class immutable.
+- The assignment to a readonly property can only occur in one of two places:
+(i) In the property declaration.
+(ii) In the constructor of the same class.
+
+```
+class Person {
+    readonly birthDate: Date;
+
+    constructor(birthDate: Date) {
+        this.birthDate = birthDate;
+    }
+}
+```
+
+==========================================================================================================
+
+Getters and Setters:
+
+(i) A getter method returns the value of the property’s value. A getter is also called an accessor.
+(ii) A setter method updates the property’s value. A setter is also known as a mutator.
+(iii) Use TypeScript getters/setters to control the access properties of a class.
+
+Example: Suppose you have an `age` class property and want to set age that is above 18 and less than 40. Now in the program
+whenever you use `person.age = 17` you need to write if else block to check for valid age. Using that check all over places is redundant and tedious.
+
+class Person {
+    private _age: number = 0;
+    private _firstName: string = "";
+    private _lastName: string = "";
+
+
+    public get age() {
+        return this._age;
+    }
+
+    public set age(theAge: number) {
+        if (theAge <= 0 || theAge >= 200) {
+            throw new Error('The age is invalid');
+        }
+        this._age = theAge;
+    }
+
+    public getFullName(): string {
+        return `${this._firstName} ${this._lastName}`;
+    }
+}
+
+const person = new Person();
+
+person.age = 60;
+
+console.log(person);
+
+// output
+Person: {
+  "_age": 60
+}
+
+How it works:
+1. First, change the access modifiers of the age, firstName, and lastName properties from public to private.
+2. Second, change the property age to _age.
+3. Third, create getter and setter methods for the _age property. In the setter method, check the validity of the input age before assigning it to the _age property.
+
+==========================================================================================================
+
+Inheritance
+(i) To inherit a class, you use the extends keyword.
+(ii) Call parent class constructor in child class constructor using super();
+
+class Person {
+  private firstName: string;
+  private lastName: string;
+
+  constructor(firstName: string, lastName: string) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+  }
+  getFullName(): string {
+      return `${this.firstName} ${this.lastName}`;
+  }
+  describe(): string {
+      return `This is ${this.firstName} ${this.lastName}.`;
+  }
+}
+
+class Employee extends Person {
+  private jobTitle: string;
+
+  constructor(firstName: string, lastName: string, jobTitle: string) {
+    this.jobTitle = jobTitle;
+    super(firstName, lastName);
+  }
+}
+
+let employee = new Employee('John','Doe','Front-end Developer');
+
+console.log(employee.getFullName());  // John Doe
+console.log(employee.describe());   // This is John Doe.
+
+Method overriding: If you have same method in child and in parent class. And you call that method with child class object.
+Then compiler will search for that method in child class first and will run if found. Else it will search for that method in parent class.
+
+If you want to directly call parent class method then use super keyword.
+
+```
+class Employee extends Person {
+    constructor(firstName: string, lastName: string, private jobTitle: string) {
+      super(firstName, lastName);
+    }
+
+    describe(): string {
+        return super.describe() + `I'm a ${this.jobTitle}.`;   // called parent class describe method.
+    }
+}
+```
+
+==========================================================================================================
+
+Static Methods and Properties
+
+(i) Unlike an instance property, a static property is shared among all instances of a class.
+(ii) To declare a static property, you use the static keyword. To access a static property, you use the className.propertyName syntax.
+
+```
+class Employee {
+    static headcount: number = 0;
+
+    constructor(
+        private firstName: string,
+        private lastName: string,
+        private jobTitle: string) {
+
+        Employee.headcount++;
+    }
+}
+```
+
+let john = new Employee('John', 'Doe', 'Front-end Developer');
+let jane = new Employee('Jane', 'Doe', 'Back-end Developer');
+
+console.log(Employee.headcount); // 2   // because the constructor ran for 2 times.
+
+Static methods
+(i) Similar to the static property, a static method is also shared across instances of the class. To declare a static method, you use the static keyword before the method name.
+
+
+```
+class Employee {
+    private static headcount: number = 0;
+
+    constructor(
+        private firstName: string,
+        private lastName: string,
+        private jobTitle: string) {
+
+        Employee.headcount++;
+    }
+
+    public static getHeadcount() {
+        return Employee.headcount;
+    }
+}
+```
+
+-> First, change the access modifier of the headcount static property from public to private so that its value cannot be changed outside of the class without creating a new Employee object.
+-> Second, add the getHeadcount() static method that returns the value of the headcount static property.
+To call a static method, you use the className.staticMethod() syntax.
+
+```
+let john = new Employee('John', 'Doe', 'Front-end Developer');
+let jane = new Employee('Jane', 'Doe', 'Back-end Developer');
+
+console.log(Employee.getHeadcount); // 2
+```
+
+
+Abstract class
+- Abstract classes cannot be instantiated: means we can't create an object of an abstract class.
+- An Abstract class has at least one abstract method.
+- To use an abstract class, you need to inherit it and provide the implementation for the abstract methods.
+
+```
+abstract class Employee {
+  private firstName: string;
+  private lastName: string;
+
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  abstract getSalary(): number
+
+  get fullName(): string {
+      return `${this.firstName} ${this.lastName}`;
+  }
+
+  compensationStatement(): string {
+      return `${this.fullName} makes ${this.getSalary()} a month.`;
+  }
+}
+
+let employee = new Employee('John','Doe');  // error TS2511: Cannot create an instance of an abstract class.
+
+
+class FullTimeEmployee extends Employee {
+  private salary: number;
+
+  constructor(firstName: string, lastName: string, salary: number) {
+    this.salary = salary;
+
+    super(firstName, lastName);
+  }
+
+  getSalary(): number {
+    return this.salary;
+  }
+}
+
+const emp = new FullTimeEmployee("Anmol", "Kumar", 1400000);
+
+console.log(emp.getSalary()); // 1400000
+```
